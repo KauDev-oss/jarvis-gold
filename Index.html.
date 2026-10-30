@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d18">
+<title>J.A.R.V.I.S.</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#080d18;color:#e8f4ff;
+ font-family:Arial,sans-serif;text-align:center;
+ min-height:100vh;padding:25px 16px;
+}
+h1{letter-spacing:7px;color:#e8b95b}
+.sub{color:#8da7bd;letter-spacing:3px}
+#clock{font-size:25px;margin:25px}
+.reactor{
+ width:190px;height:190px;border:3px solid #e8b95b;
+ border-radius:50%;margin:25px auto;
+ display:flex;align-items:center;justify-content:center;
+ box-shadow:0 0 25px #b98b36, inset 0 0 25px #b98b36;
+ animation:pulse 3s infinite;
+}
+.core{
+ width:90px;height:90px;border-radius:50%;
+ background:radial-gradient(circle,#fff2bb,#d39a35,#27364b);
+ box-shadow:0 0 30px #e8b95b;
+}
+@keyframes pulse{50%{box-shadow:0 0 45px #e8b95b,inset 0 0 35px #e8b95b}}
+#status{color:#e8b95b;margin:20px}
+input{
+ width:100%;max-width:450px;padding:15px;
+ border:1px solid #b98b36;border-radius:10px;
+ background:#101c2b;color:white;font-size:16px;
+}
+button{
+ padding:13px 18px;margin:7px;border:1px solid #d9ad55;
+ border-radius:9px;background:#172538;color:#f5d58d;
+ font-size:15px;cursor:pointer;
+}
+button:active{background:#35485c}
+.panel{
+ max-width:500px;margin:20px auto;padding:20px;
+ border:1px solid #33465c;border-radius:15px;
+ background:#101927;
+}
+#answer{color:#d4e4f3;min-height:35px;line-height:1.5}
+</style>
+</head>
+<body>
+
+<h1>J.A.R.V.I.S.</h1>
+<p class="sub">PERSONAL AI ASSISTANT</p>
+
+<div id="clock">00:00:00</div>
+
+<div class="reactor">
+ <div class="core"></div>
+</div>
+
+<div id="status">SISTEMA ONLINE</div>
+
+<div class="panel">
+ <h3>COMANDOS</h3>
+ <input id="command" placeholder="Digite um comando...">
+ <br>
+ <button onclick="executeCommand()">ENVIAR</button>
+ <button onclick="listen()">🎙 FALAR</button>
+ <div id="answer">Aguardando instruções.</div>
+</div>
+
+<div class="panel">
+ <h3>ACESSO RÁPIDO</h3>
+ <button onclick="openSite('https://www.youtube.com')">YouTube</button>
+ <button onclick="openSite('https://www.google.com')">Google</button>
+ <button onclick="openSite('https://www.whatsapp.com')">WhatsApp</button>
+ <button onclick="openSite('https://www.spotify.com')">Spotify</button>
+</div>
+
+<script>
+function updateClock(){
+ document.getElementById("clock").textContent=
+ new Date().toLocaleTimeString("pt-BR");
+}
+setInterval(updateClock,1000);
+updateClock();
+
+function speak(text){
+ document.getElementById("answer").textContent=text;
+ if("speechSynthesis" in window){
+  speechSynthesis.cancel();
+  let msg=new SpeechSynthesisUtterance(text);
+  msg.lang="pt-BR";
+  speechSynthesis.speak(msg);
+ }
+}
+
+function openSite(url){
+ window.open(url,"_blank");
+}
+
+function executeCommand(){
+ let input=document.getElementById("command");
+ let cmd=input.value.toLowerCase().trim();
+
+ if(!cmd)return;
+
+ if(cmd.includes("olá")||cmd.includes("oi")){
+  speak("Olá! Senhor. JARVIS está online.");
+ }
+ else if(cmd.includes("horas")||cmd.includes("hora")){
+  speak("Agora são "+new Date().toLocaleTimeString("pt-BR"));
+ }
+ else if(cmd.includes("data")){
+  speak("Hoje é "+new Date().toLocaleDateString("pt-BR"));
+ }
+ else if(cmd.includes("youtube")){
+  speak("Abrindo YouTube.");
+  openSite("https://www.youtube.com");
+ }
+ else if(cmd.includes("google")){
+  speak("Abrindo Google.");
+  openSite("https://www.google.com");
+ }
+ else if(cmd.includes("whatsapp")){
+  speak("Abrindo WhatsApp.");
+  openSite("https://www.whatsapp.com");
+ }
+ else if(cmd.includes("spotify")){
+  speak("Abrindo Spotify.");
+  openSite("https://www.spotify.com");
+ }
+ else if(cmd.includes("quem é você")){
+  speak("Sou JARVIS, seu assistente pessoal.");
+ }
+ else{
+  speak("Ainda não conheço esse comando. Estou pronto para aprender novas funções.");
+ }
+ input.value="";
+}
+
+function listen(){
+ const Recognition=window.SpeechRecognition||
+ window.webkitSpeechRecognition;
+
+ if(!Recognition){
+  speak("O reconhecimento de voz não está disponível neste navegador.");
+  return;
+ }
+
+ const recognition=new Recognition();
+ recognition.lang="pt-BR";
+ recognition.onstart=()=>{
+  document.getElementById("status").textContent="OUVINDO...";
+ };
+ recognition.onresult=(event)=>{
+  document.getElementById("command").value=
+  event.results[0][0].transcript;
+  executeCommand();
+ };
+ recognition.onerror=()=>{
+  document.getElementById("status").textContent="SISTEMA ONLINE";
+  speak("Não consegui reconhecer sua voz.");
+ };
+ recognition.onend=()=>{
+  document.getElementById("status").textContent="SISTEMA ONLINE";
+ };
+ recognition.start();
+}
+</script>
+
+</body>
+</html>
