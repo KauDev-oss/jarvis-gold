@@ -104,10 +104,32 @@ button:active{background:#35485c}
  <button onclick="executeCommand()">ENVIAR</button>
  <button onclick="listen()">🎙 FALAR</button>
  <div id="answer">Aguardando instruções.</div>
+
+</div>
+
+<div class="panel" id="chatPanel">
+ <h3>CONVERSA COM JARVIS</h3>
+
+ <div id="chatHistory">
+  <div class="message jarvis-message">
+   Olá, senhor. Estou pronto para conversar.
+  </div>
+ </div>
+
+ <input
+  id="chatInput"
+  type="text"
+  placeholder="Digite sua mensagem..."
+ >
+
+ <button onclick="sendChatMessage()">
+  ENVIAR MENSAGEM
+ </button>
 </div>
 
 <div class="panel">
  <h3>ACESSO RÁPIDO</h3>
+ 
  <button onclick="openSite('https://www.youtube.com')">YouTube</button>
  <button onclick="openSite('https://www.google.com')">Google</button>
  <button onclick="openSite('https://www.whatsapp.com')">WhatsApp</button>
