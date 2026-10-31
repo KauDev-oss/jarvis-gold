@@ -125,6 +125,11 @@ button:active{background:#35485c}
  <button onclick="sendChatMessage()">
   ENVIAR MENSAGEM
  </button>
+ <button onclick="enviarMensagemUltron()">
+  🔴 ENVIAR PARA ULTRON
+</button>
+
+<p id="statusUltron">ULTRON: aguardando comunicação</p>
 </div>
 
 <div class="panel">
@@ -309,33 +314,55 @@ if ("serviceWorker" in navigator) {
 }
 </script>
  <script>
+<script>
 const canalJarvis = new BroadcastChannel("JARVIS_ULTRON");
+
+function mostrarMensagem(texto, classe) {
+  const history = document.getElementById("chatHistory");
+  const div = document.createElement("div");
+
+  div.className = "message " + classe;
+  div.textContent = texto;
+
+  history.appendChild(div);
+  history.scrollTop = history.scrollHeight;
+}
 
 canalJarvis.onmessage = (event) => {
   const dados = event.data;
 
   if (dados.origem === "ULTRON" && dados.tipo === "mensagem") {
-    console.log("Mensagem recebida do ULTRON:", dados.texto);
+    mostrarMensagem("ULTRON: " + dados.texto, "jarvis-message");
 
-    alert("ULTRON enviou: " + dados.texto);
-
-    canalJarvis.postMessage({
-      origem: "JARVIS",
-      tipo: "mensagem",
-      texto: "Mensagem recebida. Estou conectado!"
-    });
+    document.getElementById("statusUltron").textContent =
+      "ULTRON: mensagem recebida";
   }
 };
 
-function enviarParaUltron(texto) {
+function enviarMensagemUltron() {
+  const input = document.getElementById("chatInput");
+  const texto = input.value.trim();
+
+  if (!texto) {
+    alert("Digite uma mensagem primeiro.");
+    return;
+  }
+
   canalJarvis.postMessage({
     origem: "JARVIS",
     tipo: "mensagem",
     texto: texto
   });
+
+  mostrarMensagem("JARVIS → ULTRON: " + texto, "user-message");
+
+  input.value = "";
+
+  document.getElementById("statusUltron").textContent =
+    "ULTRON: mensagem enviada";
 }
 
-console.log("JARVIS conectado ao canal ULTRON.");
- </script>
+console.log("JARVIS conectado ao ULTRON.");
+</script>
 </body>
 </html>
