@@ -296,76 +296,7 @@ function sendChatMessage() {
   addMessage(reply, "jarvis-message");
   history.scrollTop = history.scrollHeight;
 }
- function sendChatMessage() {
- const input = document.getElementById("chatInput");
- const history = document.getElementById("chatHistory");
- const message = input.value.trim();
-
- if (!message) return;
-
- function addMessage(text, type) {
-  const div = document.createElement("div");
-  div.className = "message " + type;
-  div.textContent = text;
-  history.appendChild(div);
- }
-
- addMessage(message, "user-message");
- input.value = "";
-
- const text = message.toLowerCase();
- let reply;
-
- let memories = JSON.parse(
-  localStorage.getItem("jarvisMemories") || "[]"
- );
-
- if (text.startsWith("lembre que ")) {
-  const memory = message.substring(11).trim();
-
-  if (memory) {
-   memories.push(memory);
-   localStorage.setItem(
-    "jarvisMemories",
-    JSON.stringify(memories)
-   );
-   reply = "Informação salva na minha memória, senhor.";
-  } else {
-   reply = "O que deseja que eu memorize?";
-  }
-
- } else if (
-  text.includes("o que você lembra") ||
-  text.includes("minhas memórias")
- ) {
-  reply = memories.length
-   ? "Estas são minhas lembranças:\n" +
-     memories.map((item, i) => (i + 1) + ". " + item).join("\n")
-   : "Ainda não tenho lembranças salvas.";
-
- } else if (text.includes("olá") || text.includes("oi")) {
-  reply = "Olá, senhor! JARVIS está online.";
-
- } else if (text.includes("seu nome")) {
-  reply = "Sou JARVIS, seu assistente pessoal.";
-
- } else if (text.includes("hora")) {
-  reply = "Agora são " + new Date().toLocaleTimeString("pt-BR");
-
- } else if (text.includes("data")) {
-  reply = "Hoje é " + new Date().toLocaleDateString("pt-BR");
-
- } else if (text.includes("obrigado")) {
-  reply = "Sempre à disposição, senhor.";
-
- } else {
-  reply = "Recebi sua mensagem, senhor. Ainda estou aprendendo novas funções.";
- }
-
- addMessage(reply, "jarvis-message");
- history.scrollTop = history.scrollHeight;
- }
-</script>
+ 
 
 <script>
  
