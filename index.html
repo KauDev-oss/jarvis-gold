@@ -377,6 +377,34 @@ if ("serviceWorker" in navigator) {
   });
 }
 </script>
- 
+ <script>
+const canalJarvis = new BroadcastChannel("JARVIS_ULTRON");
+
+canalJarvis.onmessage = (event) => {
+  const dados = event.data;
+
+  if (dados.origem === "ULTRON" && dados.tipo === "mensagem") {
+    console.log("Mensagem recebida do ULTRON:", dados.texto);
+
+    alert("ULTRON enviou: " + dados.texto);
+
+    canalJarvis.postMessage({
+      origem: "JARVIS",
+      tipo: "mensagem",
+      texto: "Mensagem recebida. Estou conectado!"
+    });
+  }
+};
+
+function enviarParaUltron(texto) {
+  canalJarvis.postMessage({
+    origem: "JARVIS",
+    tipo: "mensagem",
+    texto: texto
+  });
+}
+
+console.log("JARVIS conectado ao canal ULTRON.");
+ </script>
 </body>
 </html>
